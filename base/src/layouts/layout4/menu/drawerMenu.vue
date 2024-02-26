@@ -52,6 +52,9 @@ export default {
           productArray: [{
             title: this.$t(`Menu['概览']`),
             url: '/landing/landing'
+          },{
+            title: "测试项目",
+            url: '/vue3test/home'
           }]
         }, {
           title: this.$t(`Menu['系统管理']`),

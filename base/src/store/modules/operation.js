@@ -88,6 +88,14 @@ const state = {
       activeRule: [],
       props:{}
     },
+    {
+      // vue3项目测试
+      name: "vue3test",
+      entry: "http://localhost:9088/apps/vue3test",
+      container: "#Appmicro",
+      activeRule: [],
+      props:{}
+    }
   ],
   localeData_route_zh:{
     route:{}
