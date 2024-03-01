@@ -373,13 +373,35 @@ const actions = {
       })
     })
   },
+  testGetConfigure_sql({ commit, dispatch },systemId) {
+    const headers = {
+      "Content-Type": "application/vnd.api+json",
+      "Accept": "application/json, text/plain, */*",
+    }
+    axios.get('https://8qo3qi8vid.execute-api.cn-northwest-1.amazonaws.com.cn/v0/platform/micro-apps?filter[client]=XwgxtaFThqfJ4lru-a-&include=menu,menu.page', { headers }).then((res) => {
+      debugger
+      const client = "XwgxtaFThqfJ4lru-a-"
+      const accessRoutes = [];
+      const micro_app = res.data
+
+    }).catch(err => {
+      const { response: { data: { errorMessage } } } = err
+      ElMessage({
+        message: errorMessage ? errorMessage : t(`common['操作失败']`),
+        type: 'error',
+      })
+    })
+  },
   //获取前端配置
   getConfigure_sql({ commit, dispatch },systemId){
+    // 新的前端配置接口
+    store.dispatch('operation/testGetConfigure_sql', { commit, dispatch }, systemId)
+    // 老的前端配置接口
     return new Promise(async (resolve,reject) => {
       const cookie_name = Cookies.get('roles') ? Cookies.get('roles') : ''
       const account = Cookies.get('account')
-      // $systemApi['findConfig']('client',systemId,['micro_frontend_conf'],cookie_name).then(async res=>{
       $systemApi['findSSOConfig']('client',systemId,['micro_frontend_conf'],cookie_name,keycloakInfo.client_name).then(async res=>{
+        debugger
         const client = res.client;
         const accessRoutes = [];
         const micro_app = res.client.micro_app;
