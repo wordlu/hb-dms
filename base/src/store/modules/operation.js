@@ -17,7 +17,7 @@ import i18n from '@/lang'
 import Vue from 'vue'
 import { error } from 'jquery';
 import keycloakInfo from '@/utils/setKeycloak'
-
+import basestore from '@/jsonapi/jsonapi-store'
 
 
 const state = {
@@ -374,53 +374,46 @@ const actions = {
     })
   },
   testGetConfigure_sql({ commit, dispatch },systemId) {
-    const headers = {
-      "Content-Type": "application/vnd.api+json",
-      "Accept": "application/json, text/plain, */*",
-    }
-    axios.get('https://8qo3qi8vid.execute-api.cn-northwest-1.amazonaws.com.cn/v0/platform/micro-apps?filter[client]=XwgxtaFThqfJ4lru-a-&include=menu,menu.page', { headers }).then((res) => {
-      debugger
-      const client = "XwgxtaFThqfJ4lru-a-"
-      const accessRoutes = [];
-      const micro_app = res.data
-
-    }).catch(err => {
-      const { response: { data: { errorMessage } } } = err
-      ElMessage({
-        message: errorMessage ? errorMessage : t(`common['操作失败']`),
-        type: 'error',
-      })
-    })
+    // return new Promise(async (resolve,reject) => {
+      
+    // }).catch(err => {
+    //   debugger
+    // })
   },
   //获取前端配置
   getConfigure_sql({ commit, dispatch },systemId){
-    // 新的前端配置接口
-    store.dispatch('operation/testGetConfigure_sql', { commit, dispatch }, systemId)
-    // 老的前端配置接口
     return new Promise(async (resolve,reject) => {
       const cookie_name = Cookies.get('roles') ? Cookies.get('roles') : ''
       const account = Cookies.get('account')
-      $systemApi['findSSOConfig']('client',systemId,['micro_frontend_conf'],cookie_name,keycloakInfo.client_name).then(async res=>{
+      // 新的前端配置接口
+      // await store.dispatch('operation/testGetConfigure_sql', { commit, dispatch }, systemId)
+      const headers = {
+        "Content-Type": "application/vnd.api+json",
+        "Accept": "application/json, text/plain, */*",
+      }
+      axios.get('https://8qo3qi8vid.execute-api.cn-northwest-1.amazonaws.com.cn/v0/platform/micro-apps?filter[client]=XwgxtaFThqfJ4lru-a-&include=menu,menu.page,client.layout', { headers }).then(async res => {
         debugger
-        const client = res.client;
         const accessRoutes = [];
-        const micro_app = res.client.micro_app;
+        const micro_app = basestore.sync(res.data)
+        const client = micro_app[0]['client']
         let setApps=[];
         let special=[];
         let layout;
+        //确定layout
         for(let key in state.Layouts){
-          if(key == client.layout[0].layout_name){
+          if(key == client.layout.name){
             layout = state.Layouts[key];
           }
         }
+  
         for(let i=0;i<micro_app.length;i++){
           let development;
           let isfind = false;
           setApps[i] = new Object();
-          setApps[i].name = micro_app[i].app_name;
+          setApps[i].name = micro_app[i].name;
           if(process.env.NODE_ENV === 'development'){
             state.registerMicroApps.forEach((item)=>{
-              if(item.name == micro_app[i].app_name){
+              if(item.name == micro_app[i].name){
                 setApps[i].entry = item.entry;
                 development = item;
                 isfind = true;
@@ -431,9 +424,12 @@ const actions = {
           }
           setApps[i].proxy = micro_app[i].proxy;
           setApps[i].container = "#Appmicro";
-          setApps[i].activeRule = await setRouterPrefix(micro_app[i].menu);
+          setApps[i].activeRule = await setRouterPrefixNew(micro_app[i].menu);
+          console.log(setApps[i].activeRule, "setApps[i].activeRule")
           setApps[i].props = new Object();
-          setApps[i].props.router = await setMicroRouter(micro_app[i].menu,client.layout[0].layout_name);
+          setApps[i].props.router = await setMicroRouterNew(micro_app[i].menu,client.layout.name);
+          console.log(setApps[i].props.router, "setApps[i].props.router")
+  
           // 动态生成共享api
           jsonApiStore.prefixs.forEach((item)=>{
             setApps[i].props[`${item.api}`] = new api({alias:item.alias})
@@ -446,58 +442,58 @@ const actions = {
           // 增加显示隐藏设置的config
           setApps[i].props.setting = state.communicationInfo; // 显示隐藏相关communicationInfo-》setting
         }
-        
+  
         for(let i=0;i<setApps.length;i++){
           for(let j=0;j<special.length;j++){
-            if(setApps[i].name == special[j].page_code.split('_')[1]){
-              setApps[i].activeRule.push(`/${special[j].menu_code}${special[j].route.indexOf(':') != -1?special[j].route.split(':')[0]:special[j].route}`)
+            if(setApps[i].name == special[j].code.split('_')[1]){
+              setApps[i].activeRule.push(`/${special[j].code}${special[j].route.indexOf(':') != -1?special[j].route.split(':')[0]:special[j].route}`)
             }
           }
         }
-
+  
         commit('SET_MICROAPP', setApps)
-
-        async function setRouterPrefix(menu){
+  
+        async function setRouterPrefixNew(menu){
           let activeRule = []
           for(let i=0;i<menu.length;i++){
             for(let j=0;j<menu[i].page.length;j++){
-              if(menu[i].page[j].page_code.indexOf('_') != -1){
-                menu[i].page[j].menu_code = menu[i].menu_code
+              if(menu[i].page[j].code.indexOf('_') != -1){
+                menu[i].page[j].code = menu[i].code
                 special.push(menu[i].page[j])
               }else{
-                activeRule.push(`/${menu[i].menu_code}${menu[i].page[j].route.indexOf(':') != -1?menu[i].page[j].route.split(':')[0]:menu[i].page[j].route}`)
+                activeRule.push(`/${menu[i].code}${menu[i].page[j].route.indexOf(':') != -1?menu[i].page[j].route.split(':')[0]:menu[i].page[j].route}`)
               }
             }
           }
           return activeRule;
         }
-
-        async function setMicroRouter(menu){
+  
+        async function setMicroRouterNew(menu){
           let router = []
           
           for(let i=0;i<menu.length;i++){
             if(menu[i].page.length > 0){
               let tmp ={
-                path:`/${menu[i].menu_code}`,
+                path:`/${menu[i].code}`,
                 meta: {
-                  title: menu[i].menu_code,
-                  icon: menu[i].menu_code,
+                  title: menu[i].code,
+                  icon: menu[i].code,
                   cat: menu[i].cat,
-                  policy: menu[i].menu_policy
+                  policy: menu[i]['menu-policy']
                 },
-                name:menu[i].menu_code,
-                children:setPage(menu[i].page,menu[i].menu_code,menu[i].cat)
+                name:menu[i].code,
+                children:setPageNew(menu[i].page,menu[i].code,menu[i].cat)
               }
-              state.localeData_route_zh.route[menu[i].menu_code] = menu[i].menu_cn_name
-              state.localeData_route_en.route[menu[i].menu_code] = menu[i].menu_name
+              state.localeData_route_zh.route[menu[i].code] = menu[i]['cn-name']
+              state.localeData_route_en.route[menu[i].code] = menu[i]['name']
               router.push(tmp)
-              setAccessRoutes(JSON.parse(JSON.stringify(tmp)))
+              setAccessRoutesNew(JSON.parse(JSON.stringify(tmp)))
             }
           }
           return router;
         }
-
-        function setAccessRoutes(tmp){
+  
+        function setAccessRoutesNew(tmp){
           tmp.component = layout
           for(let i=0;i<tmp.children.length;i++){
             delete tmp.children[i].component;
@@ -507,77 +503,221 @@ const actions = {
           }
           accessRoutes.push(tmp)
         }
-        
-        function setPage(pages,menu_code,cat){
+  
+        function setPageNew(pages,menu_code,cat){
           let pageRouter = []
           for(let i=0;i<pages.length;i++){
             pageRouter.push(
               {
                 path:`/${menu_code}${pages[i].route}`,
                 component_path: `@${pages[i].uri}`,
-                name: `${pages[i].page_code}`,
-                meta: { title: pages[i].page_code, icon: pages[i].page_code, affix: false , cat:cat },
+                name: `${pages[i].code}`,
+                meta: { title: pages[i].code, icon: pages[i].code, affix: false , cat:cat },
                 hidden:pages[i].hidden == 1?false:true,
               }
             )
-            state.localeData_route_zh.route[pages[i].page_code] = pages[i].page_cn_name;
-            state.localeData_route_en.route[pages[i].page_code] = pages[i].page_name;
+            state.localeData_route_zh.route[pages[i].code] = pages[i]['cn-name'];
+            state.localeData_route_en.route[pages[i].code] = pages[i].name;
           }
           return pageRouter;
         }
-        // @wodelu: TODO
-        if(client.client_name == 'daily-report'){
-          accessRoutes.push(
-            {
-              path: '/',
-              component: layout,
-              redirect: '/dailyReport-role/index',
-              hidden:true,
-              name:'Dashboard'
-            }
-          )
-        } else if (client.client_name == 'shell' && account === "liangdao.demo") {
-          accessRoutes.push(
-            {
-              path: '/',
-              component: layout,
-              redirect: '/dataasset/overview',
-              hidden:true,
-              name:'Dashboard'
-            }
-          )
-        } else{
-          accessRoutes.push(
-            {
-              path: '/',
-              component: layout,
-              redirect: '/dmsshell/userlist',
-              hidden:true,
-              name:'Dashboard'
-            }
-          )
-        }
+  
+        accessRoutes.push(
+          {
+            path: '/',
+            component: layout,
+            redirect: '/algorithem/algorithempanel',
+            hidden:true,
+            name:'Dashboard'
+          }
+        )
         console.log(accessRoutes,'accessRoutes')
-        console.log(state.localeData_route_zh,'state.localeData_route_zh')
-        await i18n.mergeLocaleMessage('zh', state.localeData_route_zh)
-        await i18n.mergeLocaleMessage('en', state.localeData_route_en)
+        debugger
         resolve(accessRoutes)
-      }).catch((err)=>{
-        const options = {
-          domain: window.server.domain,
-          path: "/",
-        }
-        Cookies.remove('Token',options)
-        Cookies.remove('refresh_token',options)
-        Cookies.remove('systemId',options)
-        Cookies.remove('roles',options)
-        
-        Cookies.remove('Token')
-        Cookies.remove('refresh_token')
-        Cookies.remove('systemId')
-        Cookies.remove('roles')
-        // location.href = this.$keycloak.logout
       })
+      .catch(err => {
+        debugger
+      })
+
+      // 老的前端配置接口
+      // $systemApi['findSSOConfig']('client',systemId,['micro_frontend_conf'],cookie_name,keycloakInfo.client_name).then(async res=>{
+      //   debugger
+      //   const client = res.client;
+      //   const accessRoutes = [];
+      //   const micro_app = res.client.micro_app;
+      //   let setApps=[];
+      //   let special=[];
+      //   let layout;
+      //   for(let key in state.Layouts){
+      //     if(key == client.layout[0].layout_name){
+      //       layout = state.Layouts[key];
+      //     }
+      //   }
+      //   for(let i=0;i<micro_app.length;i++){
+      //     let development;
+      //     let isfind = false;
+      //     setApps[i] = new Object();
+      //     setApps[i].name = micro_app[i].app_name;
+      //     if(process.env.NODE_ENV === 'development'){
+      //       state.registerMicroApps.forEach((item)=>{
+      //         if(item.name == micro_app[i].app_name){
+      //           setApps[i].entry = item.entry;
+      //           development = item;
+      //           isfind = true;
+      //         }
+      //       })
+      //     }else{
+      //       setApps[i].entry = "/apps" + micro_app[i].entry;
+      //     }
+      //     setApps[i].proxy = micro_app[i].proxy;
+      //     setApps[i].container = "#Appmicro";
+      //     setApps[i].activeRule = await setRouterPrefix(micro_app[i].menu);
+      //     setApps[i].props = new Object();
+      //     setApps[i].props.router = await setMicroRouter(micro_app[i].menu,client.layout[0].layout_name);
+      //     // 动态生成共享api
+      //     jsonApiStore.prefixs.forEach((item)=>{
+      //       setApps[i].props[`${item.api}`] = new api({alias:item.alias})
+      //     })
+      //     setApps[i].props.pyQt = $pyQt;
+          
+      //     setApps[i].props.menuList = state.menuList;
+      //     setApps[i].props.icons = Vue.prototype.$icons;
+      //     setApps[i].props.filter = Vue.prototype.$filter;
+      //     // 增加显示隐藏设置的config
+      //     setApps[i].props.setting = state.communicationInfo; // 显示隐藏相关communicationInfo-》setting
+      //   }
+        
+      //   for(let i=0;i<setApps.length;i++){
+      //     for(let j=0;j<special.length;j++){
+      //       if(setApps[i].name == special[j].page_code.split('_')[1]){
+      //         setApps[i].activeRule.push(`/${special[j].menu_code}${special[j].route.indexOf(':') != -1?special[j].route.split(':')[0]:special[j].route}`)
+      //       }
+      //     }
+      //   }
+
+      //   commit('SET_MICROAPP', setApps)
+
+      //   async function setRouterPrefix(menu){
+      //     let activeRule = []
+      //     for(let i=0;i<menu.length;i++){
+      //       for(let j=0;j<menu[i].page.length;j++){
+      //         if(menu[i].page[j].page_code.indexOf('_') != -1){
+      //           menu[i].page[j].menu_code = menu[i].menu_code
+      //           special.push(menu[i].page[j])
+      //         }else{
+      //           activeRule.push(`/${menu[i].menu_code}${menu[i].page[j].route.indexOf(':') != -1?menu[i].page[j].route.split(':')[0]:menu[i].page[j].route}`)
+      //         }
+      //       }
+      //     }
+      //     return activeRule;
+      //   }
+
+      //   async function setMicroRouter(menu){
+      //     let router = []
+          
+      //     for(let i=0;i<menu.length;i++){
+      //       if(menu[i].page.length > 0){
+      //         let tmp ={
+      //           path:`/${menu[i].menu_code}`,
+      //           meta: {
+      //             title: menu[i].menu_code,
+      //             icon: menu[i].menu_code,
+      //             cat: menu[i].cat,
+      //             policy: menu[i].menu_policy
+      //           },
+      //           name:menu[i].menu_code,
+      //           children:setPage(menu[i].page,menu[i].menu_code,menu[i].cat)
+      //         }
+      //         state.localeData_route_zh.route[menu[i].menu_code] = menu[i].menu_cn_name
+      //         state.localeData_route_en.route[menu[i].menu_code] = menu[i].menu_name
+      //         router.push(tmp)
+      //         setAccessRoutes(JSON.parse(JSON.stringify(tmp)))
+      //       }
+      //     }
+      //     return router;
+      //   }
+
+      //   function setAccessRoutes(tmp){
+      //     tmp.component = layout
+      //     for(let i=0;i<tmp.children.length;i++){
+      //       delete tmp.children[i].component;
+      //     }
+      //     if(tmp.meta.cat == 'menu'){
+      //       state.menuList.push(tmp)
+      //     }
+      //     accessRoutes.push(tmp)
+      //   }
+        
+      //   function setPage(pages,menu_code,cat){
+      //     let pageRouter = []
+      //     for(let i=0;i<pages.length;i++){
+      //       pageRouter.push(
+      //         {
+      //           path:`/${menu_code}${pages[i].route}`,
+      //           component_path: `@${pages[i].uri}`,
+      //           name: `${pages[i].page_code}`,
+      //           meta: { title: pages[i].page_code, icon: pages[i].page_code, affix: false , cat:cat },
+      //           hidden:pages[i].hidden == 1?false:true,
+      //         }
+      //       )
+      //       state.localeData_route_zh.route[pages[i].page_code] = pages[i].page_cn_name;
+      //       state.localeData_route_en.route[pages[i].page_code] = pages[i].page_name;
+      //     }
+      //     return pageRouter;
+      //   }
+      //   // @wodelu: TODO
+      //   if(client.client_name == 'daily-report'){
+      //     accessRoutes.push(
+      //       {
+      //         path: '/',
+      //         component: layout,
+      //         redirect: '/dailyReport-role/index',
+      //         hidden:true,
+      //         name:'Dashboard'
+      //       }
+      //     )
+      //   } else if (client.client_name == 'shell' && account === "liangdao.demo") {
+      //     accessRoutes.push(
+      //       {
+      //         path: '/',
+      //         component: layout,
+      //         redirect: '/dataasset/overview',
+      //         hidden:true,
+      //         name:'Dashboard'
+      //       }
+      //     )
+      //   } else{
+      //     accessRoutes.push(
+      //       {
+      //         path: '/',
+      //         component: layout,
+      //         redirect: '/dmsshell/userlist',
+      //         hidden:true,
+      //         name:'Dashboard'
+      //       }
+      //     )
+      //   }
+      //   console.log(accessRoutes,'accessRoutes')
+      //   console.log(state.localeData_route_zh,'state.localeData_route_zh')
+      //   await i18n.mergeLocaleMessage('zh', state.localeData_route_zh)
+      //   await i18n.mergeLocaleMessage('en', state.localeData_route_en)
+      //   resolve(accessRoutes)
+      // }).catch((err)=>{
+      //   const options = {
+      //     domain: window.server.domain,
+      //     path: "/",
+      //   }
+      //   Cookies.remove('Token',options)
+      //   Cookies.remove('refresh_token',options)
+      //   Cookies.remove('systemId',options)
+      //   Cookies.remove('roles',options)
+        
+      //   Cookies.remove('Token')
+      //   Cookies.remove('refresh_token')
+      //   Cookies.remove('systemId')
+      //   Cookies.remove('roles')
+      //   // location.href = this.$keycloak.logout
+      // })
     })
   },
   getCommandInfo({ commit, dispatch }){

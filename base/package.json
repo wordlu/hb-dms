@@ -60,6 +60,7 @@
     "jquery": "^3.5.1",
     "js-cookie": "2.2.0",
     "js-md5": "^0.7.3",
+    "jsonapi-datastore": "^0.4.0-beta",
     "jsonapi-vuex": "^5.10.0",
     "jsonlint": "1.6.3",
     "jszip": "3.2.1",

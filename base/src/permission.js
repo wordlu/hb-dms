@@ -33,25 +33,25 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = 'Admin-Token'
   const isToken = Cookies.get('Token')
 
-  await axios.get(`/langs/Menu/zh.json`).then(res=>{
-    i18n.mergeLocaleMessage('zh', res.data)
-  })
-  await axios.get(`/langs/Menu/en.json`).then(res=>{
-    i18n.mergeLocaleMessage('en', res.data)
-  })
-  await axios.get(`/langs/Menu/jp.json`).then(res=>{
-    i18n.mergeLocaleMessage('jp', res.data)
-  })
+  // await axios.get(`/langs/Menu/zh.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('zh', res.data)
+  // })
+  // await axios.get(`/langs/Menu/en.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('en', res.data)
+  // })
+  // await axios.get(`/langs/Menu/jp.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('jp', res.data)
+  // })
 
-  await axios.get(`/langs/common/zh.json`).then(res=>{
-    i18n.mergeLocaleMessage('zh', res.data)
-  })
-  await axios.get(`/langs/common/en.json`).then(res=>{
-    i18n.mergeLocaleMessage('en', res.data)
-  })
-  await axios.get(`/langs/common/jp.json`).then(res=>{
-    i18n.mergeLocaleMessage('jp', res.data)
-  })
+  // await axios.get(`/langs/common/zh.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('zh', res.data)
+  // })
+  // await axios.get(`/langs/common/en.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('en', res.data)
+  // })
+  // await axios.get(`/langs/common/jp.json`).then(res=>{
+  //   i18n.mergeLocaleMessage('jp', res.data)
+  // })
 
   if (hasToken && isToken) {
     if (to.path === '/login') {
