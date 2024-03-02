@@ -1,10 +1,10 @@
 /* eslint-disable */
 
 <template>
-  <nav>
+  <!-- <nav>
     <router-link :to="{ path: '/homepage/home' }">Home</router-link> |
     <router-link :to="{ path: '/homepage/about' }">About</router-link>
-  </nav>
+  </nav> -->
   <router-view></router-view>
 
 </template>

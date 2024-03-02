@@ -2,10 +2,14 @@
   <div id="Layout4">
     <div id="topBar">
       <div class="login-nav-left">
-        <drawerMenu/>
-        <img class="login" :src="require('@/assets/images/Union.png')" alt="">
+        <img class="login" :src="require('@/assets/images/logo.svg')" alt="">
       </div>
-      <!-- <Dropdown /> -->
+			<div class="menus">
+				<div class="menu-item" @click="clickMenu('首页')">首页</div>
+				<div class="menu-item" @click="clickMenu('资源管理')">资源管理</div>
+				<div class="menu-item" @click="clickMenu('运营监控')">运营监控</div>
+				<div class="menu-item" @click="clickMenu('数据服务')">数据服务</div>
+			</div>
       <div class="login-nav-right">
         <div class="userSet" @click="clickAccount">
           <img class="userImg" :src="require('@/assets/images/Ellipse 1.png')" alt="">
@@ -20,30 +24,9 @@
           </div>
         </div>
         <lang-select class="right-menu-item hover-effect" style="margin-left: 10px;margin-top: 9px;"/>
-        <!-- <div class="userSet langs" @click="clickLangs">
-          <span class="account">
-            {{ $i18n.locale }}
-          </span>
-          <svg-icon icon-class="down" class="down" style="width:16px;height:16px;margin-left:8px;"/>
-          <div class="dropdown" v-if="showLangsDropdown">
-            <div class="dropdown-item" @click="Language('zh')" v-show="$i18n.locale !== 'zh'">
-             zh
-            </div>
-            <div class="dropdown-item"  @click="Language('en')" v-show="$i18n.locale !== 'en'">
-             en
-            </div>
-            <div class="dropdown-item"  @click="Language('jp')" v-show="$i18n.locale !== 'jp'">
-             jp
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
-    <!-- <div class="breadcrumb"> -->
-      <!-- <Breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
-    <!-- </div> -->
     <div id="main">
-      <!-- v-if="showNavMenuGet()" -->
       <navMenu :activeRouter="activeRouter"></navMenu>
       <div :id="navMenutype == 'navMenu'?'containerMenu':'container'">
         <section id="Appmicro"></section>
@@ -83,7 +66,67 @@ export default {
       direction: 'ltr',
       showNavMenu: true,
       pathnameArr: ['dmsshell'],
-      window: window
+      window: window,
+			modules: [{
+				moduleName: '首页',
+				url: '/homepage/home',
+				menuList: []
+			},{
+				moduleName: '资源管理',
+				url: '/users/lists',
+				menuList: [
+					{
+						menuLevel1: '人员管理',
+						list: [
+							{
+								name: '用户管理',
+								url: '/users/lists'
+							},
+							{
+								name: '角色管理',
+								url: '/users/roles'
+							}
+						]
+					},
+					{
+						menuLevel1: '车辆管理',
+						list: []
+					},
+					{
+						menuLevel1: '运营管理',
+						list: [
+							{
+								name: '区域管理',
+								url: '/users/lists'
+							},
+							{
+								name: '线路管理',
+								url: '/users/roles'
+							},
+							{
+								name: '调度管理',
+								url: '/users/roles'
+							},
+							{
+								name: '任务管理',
+								url: '/users/roles'
+							}
+						]
+					},
+					{
+						menuLevel1: '云端资源管理',
+						list: []
+					}
+				]
+			},{
+				moduleName: '运营监控',
+				url: '/authority/areas',
+				menuList: []
+			},{
+				moduleName: '数据服务',
+				url: '/historys/cars',
+				menuList: []
+			}]
     }
   },
   watch:{
@@ -106,12 +149,11 @@ export default {
     this.account = Cookies.get('account');
   },
   methods:{
-    // showNavMenuGet() {
-    //   if (window.location.pathname.indexOf('dmsshell') > -1) {
-    //     return true;
-    //   }
-    //   return false;
-    // },
+		clickMenu(name) {
+			const url = this.modules.find(it => it.moduleName === name).url
+      window.history.pushState(null,'',url)
+      this.drawer = false
+    },
     clickAccount(){
       this.showDropdown = !this.showDropdown
     },
@@ -120,7 +162,6 @@ export default {
     },
     Language(val) {
       this.$i18n.locale = val
-      // localStorage.setItem('language', val)
       Cookies.set('language', val)
       actions.setGlobalState({lang:val});
     },
@@ -158,6 +199,17 @@ export default {
       display: flex;
       align-items: center;
     }
+		.menus {
+			width: 484px;
+			height: 32px;
+			display: flex;
+    	justify-content: space-between;
+
+			.menu-item {
+				width: 120px;
+				cursor: pointer;
+			}
+		}
     .login{
       width: 123px;
       height: 32px;
