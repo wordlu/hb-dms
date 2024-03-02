@@ -35,14 +35,6 @@ const state = {
   microApp:[],
   registerMicroApps:[
     {
-      //权限管理
-      name: "dmsshell",
-      entry: "http://localhost:8080/apps/dmsshell",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },
-    {
       //算法库
       name: "algorithem",
       entry: "http://localhost:9082/apps/algorithem",
@@ -51,47 +43,17 @@ const state = {
       props:{}
     },
     {
-      //治理集成
-      name: "governance",
-      entry: "http://localhost:8083/apps/governance",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },
-    {
-      //概览
-      name: "landing",
-      entry: "http://localhost:9081/apps/landing",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },
-    {
-      // 数据存储
-      name: "datastore",
-      entry: "http://localhost:8094/apps/datastore",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },{
-      // 数据存储
-      name: "dataasset",
-      entry: "http://localhost:8095/apps/dataasset",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },
-    {
-      name: "tagLibrary",
-      entry: "http://localhost:8086/apps/tagLibrary",
-      container: "#Appmicro",
-      activeRule: [],
-      props:{}
-    },
-    {
       // vue3项目测试
       name: "vue3test",
       entry: "http://localhost:9088/apps/vue3test",
+      container: "#Appmicro",
+      activeRule: [],
+      props:{}
+    },
+		{
+      // homepage
+      name: "homepage",
+      entry: "http://localhost:8082/apps/homepage",
       container: "#Appmicro",
       activeRule: [],
       props:{}
@@ -172,11 +134,6 @@ const actions = {
           domain: window.server.domain,
           path: "/",
         }
-        //标注需要
-        // Cookies.set('account', data.account, options)
-        // Cookies.set('Token', data.token, options)
-        // Cookies.set('roles', data.role_ids.join(','), options)
-        // const currentRoles = data.auth_info.resource_access[keycloakInfo.client_name].roles.toString()
         const currentAccess = data.auth_info.resource_access[keycloakInfo.client_name]
         if(!currentAccess){
           store.dispatch('operation/logout').then(() => {
