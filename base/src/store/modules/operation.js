@@ -95,6 +95,14 @@ const state = {
       container: "#Appmicro",
       activeRule: [],
       props:{}
+    },
+    {
+      // 人员管理
+      name: "personnel",
+      entry: "http://localhost:4200/personnel",
+      container: "#Appmicro",
+      activeRule: [],
+      props:{}
     }
   ],
   localeData_route_zh:{
