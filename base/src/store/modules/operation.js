@@ -394,7 +394,6 @@ const actions = {
         "Accept": "application/json, text/plain, */*",
       }
       axios.get('https://8qo3qi8vid.execute-api.cn-northwest-1.amazonaws.com.cn/v0/platform/micro-apps?filter[client]=XwgxtaFThqfJ4lru-a-&include=menu,menu.page,client.layout', { headers }).then(async res => {
-        debugger
         const accessRoutes = [];
         const micro_app = basestore.sync(res.data)
         const client = micro_app[0]['client']
@@ -534,16 +533,14 @@ const actions = {
           }
         )
         console.log(accessRoutes,'accessRoutes')
-        debugger
         resolve(accessRoutes)
       })
       .catch(err => {
-        debugger
+        console.log(err)
       })
 
       // 老的前端配置接口
       // $systemApi['findSSOConfig']('client',systemId,['micro_frontend_conf'],cookie_name,keycloakInfo.client_name).then(async res=>{
-      //   debugger
       //   const client = res.client;
       //   const accessRoutes = [];
       //   const micro_app = res.client.micro_app;
