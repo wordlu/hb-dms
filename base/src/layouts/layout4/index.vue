@@ -73,7 +73,7 @@ export default {
 				menuList: []
 			},{
 				moduleName: '资源管理',
-				url: '/users/lists',
+				url: '/personnel/users',
 				menuList: [
 					{
 						menuLevel1: '人员管理',

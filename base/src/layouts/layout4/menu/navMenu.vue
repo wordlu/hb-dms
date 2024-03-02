@@ -71,7 +71,7 @@ export default {
     },
     getAllMenu() {
       // @wodelu: TODO-菜单权限
-      if (window.location.pathname.indexOf('users') > -1) {
+      if (window.location.pathname.indexOf('personnel') > -1) {
         this.subMenu = [{
           index: '1',
           title: '人员管理',

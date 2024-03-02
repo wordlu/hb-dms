@@ -12,11 +12,11 @@ const router = createRouter({
       // redirect: '/personnel/user',
       children:[
         {
-          path: 'user',
+          path: 'users',
           component: User
         },
         {
-          path: 'role',
+          path: 'roles',
           component: Role
         }
       ]
