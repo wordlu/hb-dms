@@ -344,9 +344,9 @@ export default {
         Cookies.set('token_type', response.data.token_type)
         Cookies.set('user', response.data.user)
 
-        let routeUrl = this.$router.resolve({
-          path: '/forget/emil'
-        })
+        // let routeUrl = this.$router.resolve({
+        //   path: '/forget/emil'
+        // })
 				this.$router.push({ path: '/' })
       })
       .catch((error) => {

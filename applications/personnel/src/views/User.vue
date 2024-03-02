@@ -1,11 +1,10 @@
 <template>
   <div class="home">
-    <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <div class="header">
       <span>用户管理</span>
-      <el-button class="add" size="small" :icon="Plus">人员录入</el-button>
+      <el-button class="add" size="middle" icon="Plus">人员录入</el-button>
     </div>
-    <el-table :data="tableData"  style="width: 100%">
+    <el-table :data="tableData"  style="width: 100%" >
       <el-table-column prop="code" label="账号" width="180" />
       <el-table-column prop="name" label="姓名" width="180" />
       <el-table-column prop="email" label="邮箱" width="180" />
@@ -18,18 +17,16 @@
       >
         <template #default="scope">
           <el-tag v-for="item in scope.row.role">{{ item }}</el-tag>
-          <!-- <el-tag>{{ scope.row.role }}</el-tag> -->
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip fixed="right" label="操作" width="120">
         <template #default>
           <!-- <el-button type="primary" size="small" ref="buttonRef" v-hover-outside="onClickOutside">...</el-button> -->
           <el-popover
-            placement="top-start"
-            title="Title"
+            placement="bottom-start"
             :width="200"
             trigger="hover"
-            content="this is content, this is content, this is content"
+            content="t"
           >
             <template #reference>
               <el-button class="m-2">...</el-button>
@@ -43,8 +40,7 @@
 
 <script lang="ts" >
 import { defineComponent } from 'vue';
-import { ClickOutside as vClickOutside } from 'element-plus'
-// import { Search, Plus, Delete } from "@element-plus/icons-vue"
+import { Search, Plus, Delete } from "@element-plus/icons-vue"
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import { ref, unref } from 'vue'
 const buttonRef = ref()
@@ -119,7 +115,7 @@ export default defineComponent({
     margin-top:20px;
     border-radius: 8px;
 
-    thead {
+    th {
       background-color: #f3f4f7;
     }
   }
@@ -134,13 +130,23 @@ export default defineComponent({
 
   .m-2 {
     border: none;
-    background-color: none;
+    // background-color: none;
     width: 32px;
     height: 32px;
+    font-size: 24px;
+    line-height: 32px;
+
+    span {
+      display: block;
+      line-height: 32px;
+    }
   }
 
   .m-2:hover {
     background-color: #5b5e70;
+    color: white;
+    // font-size: 18px;
+    // line-height: auto;
   }
 }
 </style>
