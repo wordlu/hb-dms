@@ -69,63 +69,16 @@ export default {
       window: window,
 			modules: [{
 				moduleName: '首页',
-				url: '/homepage/home',
-				menuList: []
+				url: '/homepage/home'
 			},{
 				moduleName: '资源管理',
-				url: '/personnel/users',
-				menuList: [
-					{
-						menuLevel1: '人员管理',
-						list: [
-							{
-								name: '用户管理',
-								url: '/users/lists'
-							},
-							{
-								name: '角色管理',
-								url: '/users/roles'
-							}
-						]
-					},
-					{
-						menuLevel1: '车辆管理',
-						list: []
-					},
-					{
-						menuLevel1: '运营管理',
-						list: [
-							{
-								name: '区域管理',
-								url: '/users/lists'
-							},
-							{
-								name: '线路管理',
-								url: '/users/roles'
-							},
-							{
-								name: '调度管理',
-								url: '/users/roles'
-							},
-							{
-								name: '任务管理',
-								url: '/users/roles'
-							}
-						]
-					},
-					{
-						menuLevel1: '云端资源管理',
-						list: []
-					}
-				]
+				url: '/personnel/users'
 			},{
 				moduleName: '运营监控',
-				url: '/authority/areas',
-				menuList: []
+				url: '/authority/areas'
 			},{
 				moduleName: '数据服务',
-				url: '/historys/cars',
-				menuList: []
+				url: '/historys/cars'
 			}]
     }
   },
