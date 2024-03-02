@@ -1,8 +1,9 @@
 <template>
   <div id="Login">
     <!-- 本地调试及日报系统使用老版本登录页面 -->
-    <commonVue v-if="$keycloak.client_name === 'dailyReport' || window.location.hostname === 'localhost'"/>
-    <dmsVue v-else/>
+    <!-- <commonVue v-if="$keycloak.client_name === 'dailyReport' || window.location.hostname === 'localhost'"/>
+    <dmsVue v-else/> -->
+		<commonVue />
   </div>
 </template>
 

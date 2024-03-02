@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="login-from-container">
-        <iframe v-if="NODE_ENV !== 'development'" id="loginFrom" :src="$keycloak.login" frameborder="0"></iframe>
+        <!-- <iframe v-if="NODE_ENV !== 'development'" id="loginFrom" :src="$keycloak.login" frameborder="0"></iframe> -->
           
-        <el-form v-else :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item :label="$t('login.email')" prop="email">
             <el-input type="text" v-model.trim="ruleForm.email" tabindex="1" autocomplete="on" size="small"></el-input>
           </el-form-item>
