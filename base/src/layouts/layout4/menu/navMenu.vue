@@ -78,11 +78,11 @@ export default {
           type: 'elSubmenu',
           menuItem: [
             {
-              index: '/users/lists',
+              index: '/personnel/users',
               title: '用户管理',
             },
             {
-              index: '/users/roles',
+              index: '/personnel/roles',
               title: '角色管理',
             }
           ]
