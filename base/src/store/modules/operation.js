@@ -373,13 +373,7 @@ const actions = {
       })
     })
   },
-  testGetConfigure_sql({ commit, dispatch },systemId) {
-    // return new Promise(async (resolve,reject) => {
-      
-    // }).catch(err => {
-    //   debugger
-    // })
-  },
+  // testGetConfigure_sql({ commit, dispatch },systemId) {},
   //获取前端配置
   getConfigure_sql({ commit, dispatch },systemId){
     return new Promise(async (resolve,reject) => {
