@@ -347,8 +347,6 @@ export default {
         let routeUrl = this.$router.resolve({
           path: '/forget/emil'
         })
-        // window.open(routeUrl.href, '_blank')
-				debugger
 				this.$router.push({ path: '/' })
       })
       .catch((error) => {

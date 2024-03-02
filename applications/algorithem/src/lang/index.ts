@@ -21,9 +21,9 @@ const i18n:any = createI18n({
   messages,
 });
 
-mergeLocale('Menu')
-mergeLocale('common')
-mergeLocale('algorithm')
+// mergeLocale('Menu')
+// mergeLocale('common')
+// mergeLocale('algorithm')
 
 function mergeLocale(project:any){
   for(let key in messages){
