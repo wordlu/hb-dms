@@ -1,8 +1,5 @@
 <template>
   <div id="dms-navMenu" v-show="subMenu.length > 0">
-    <!-- <el-menu :default-active="defaultActive" :router="true" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-      <el-menu-item v-for="(sub_item,sub_index) in subMenu" :key="sub_index" :index="sub_item.path" @click="setPath(sub_item)">{{generateTitle(sub_item.meta.title,sub_item.meta)}}</el-menu-item>
-    </el-menu> -->
     <el-menu :default-active="$route.path" :router="true" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse" :default-openeds="opends">
       <template v-for="(subMenuItem,sub_index) in subMenu" >
         <el-submenu :key="sub_index"  :index="subMenuItem.index" v-if="subMenuItem.type === 'elSubmenu'">
@@ -73,61 +70,68 @@ export default {
       console.log(this.defaultActive,'this.defaultActive')
     },
     getAllMenu() {
-      // const frontendArray = Cookies.get('frontendArray').split(',')
-      // // this.subMenu = this.menuList.map(it => it.children).flat()
-      // this.subMenu = this.menuList.filter(it => frontendArray.includes(it.meta.policy)).map(it => it.children).flat()
-      
       // @wodelu: TODO-菜单权限
-      if (window.location.pathname.indexOf('dmsshell') > -1) {
+      if (window.location.pathname.indexOf('users') > -1) {
         this.subMenu = [{
           index: '1',
-          title: this.$t(`Menu['访问管理']`),
+          title: '人员管理',
+          type: 'elSubmenu',
+          menuItem: [
+            {
+              index: '/users/lists',
+              title: '用户管理',
+            },
+            {
+              index: '/users/roles',
+              title: '角色管理',
+            }
+          ]
+        },
+				{
+          index: '2',
+          title: '车辆管理',
+          type: 'elSubmenu',
+          menuItem: [
+            {
+              index: '/algorithem/algorithempanel',
+              title: '车辆管理',
+            }
+          ]
+        },
+				{
+          index: '3',
+          title: '运营管理',
           type: 'elSubmenu',
           menuItem: [
             {
               index: '/dmsshell/userlist',
-              title: this.$t(`Menu['用户']`),
+              title: '区域管理',
             },
             {
               index: '/dmsshell/rolelist',
-              title: this.$t(`Menu['角色']`),
+              title: '线路管理',
             },
             {
               index: '/dmsshell/policies',
-              title: this.$t(`Menu['策略']`),
+              title: '调度管理',
+            },
+						{
+              index: '/dmsshell/policies',
+              title: '任务管理',
             }
           ]
-        }]
-      } else if (window.location.pathname.indexOf('governance') > -1) {
-        this.subMenu = [{
-          index: '/governance/overview',
-          title: this.$t(`common['简介']`),
-          type: 'elMenuItem',
-        },{
-          index: '/governance/tasks',
-          title: this.$t(`Menu['治理任务']`),
-          type: 'elMenuItem',
-        },{
-          index: '/governance/proposals',
-          title: this.$t(`Menu['治理方案']`),
-          type: 'elMenuItem',
-        },{
-          index: '/governance/triggers',
-          title: this.$t(`Menu['触发器']`),
-          type: 'elMenuItem',
-        }]
-      } else if (window.location.pathname.indexOf('dataasset') > -1) {
-        this.subMenu = [
-          {
-          index: '/dataasset/overview',
-          title: this.$t(`Menu['数据总览']`),
-          type: 'elMenuItem',
-          },
-          {
-          index: '/dataasset/search',
-          title: this.$t(`Menu['数据搜索']`),
-          type: 'elMenuItem',
-        }]
+        },
+				{
+          index: '4',
+          title: '高精地图管理',
+          type: 'elSubmenu',
+          menuItem: [
+            {
+              index: '/algorithem/algorithempanel',
+              title: '高精地图管理',
+            }
+          ]
+        },]
       } else if (window.location.pathname.indexOf('algorithem') > -1) {
         this.subMenu = [
           {
@@ -200,6 +204,8 @@ export default {
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
+		overflow: auto;
+    padding-bottom: 40px;
   }
 }
 </style>
