@@ -71,7 +71,7 @@ export default {
     },
     getAllMenu() {
       // @wodelu: TODO-菜单权限
-      if (window.location.pathname.indexOf('personnel') > -1) {
+      if (window.location.pathname.indexOf('personnel') > -1 || window.location.pathname.indexOf('vehicles') > -1 || window.location.pathname.indexOf('operation') > -1) {
         this.subMenu = [{
           index: '1',
           title: '人员管理',
@@ -93,7 +93,7 @@ export default {
           type: 'elSubmenu',
           menuItem: [
             {
-              index: '/algorithem/algorithempanel',
+              index: '/vehicles/lists',
               title: '车辆管理',
             }
           ]
@@ -104,19 +104,19 @@ export default {
           type: 'elSubmenu',
           menuItem: [
             {
-              index: '/dmsshell/userlist',
+              index: '/operation/regions',
               title: '区域管理',
             },
             {
-              index: '/dmsshell/rolelist',
+              index: '/operation/lines',
               title: '线路管理',
             },
             {
-              index: '/dmsshell/policies',
+              index: '/operation/dispatchs',
               title: '调度管理',
             },
 						{
-              index: '/dmsshell/policies',
+              index: '/operation/tasks',
               title: '任务管理',
             }
           ]
@@ -205,7 +205,7 @@ export default {
     width: 200px;
     min-height: 400px;
 		overflow: auto;
-    padding-bottom: 40px;
+    padding-bottom: 100px;
   }
 }
 </style>

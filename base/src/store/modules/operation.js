@@ -58,10 +58,26 @@ const state = {
       activeRule: [],
       props:{}
     },
+		{
+      // 车辆管理
+      name: "vehicles",
+      entry: "http://localhost:8083/apps/vehicles",
+      container: "#Appmicro",
+      activeRule: [],
+      props:{}
+    },
     {
       // 人员管理
       name: "personnel",
       entry: "http://localhost:4200/personnel",
+      container: "#Appmicro",
+      activeRule: [],
+      props:{}
+    },
+		{
+      // 运营管理
+      name: "operation",
+      entry: "http://localhost:8084/apps/operation",
       container: "#Appmicro",
       activeRule: [],
       props:{}

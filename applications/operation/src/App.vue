@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 <template>
+  <h2>运营管理</h2>
   <router-view></router-view>
 
 </template>

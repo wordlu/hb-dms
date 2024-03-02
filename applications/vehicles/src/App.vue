@@ -1,6 +1,9 @@
 /* eslint-disable */
 
 <template>
+  <h2>
+    车辆列表
+  </h2>
   <router-view></router-view>
 
 </template>
