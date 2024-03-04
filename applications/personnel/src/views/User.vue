@@ -9,25 +9,29 @@
       <el-table-column prop="name" label="姓名" width="180" />
       <el-table-column prop="email" label="邮箱" width="180" />
       <el-table-column prop="phone" label="手机号" />
+      <!-- :filter-method="filterTag" -->
       <el-table-column
         prop="role"
         label="角色"
-        :filter-method="filterTag"
         filter-placement="bottom-end"
       >
         <template #default="scope">
           <el-tag v-for="item in scope.row.role">{{ item }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip fixed="right" label="操作" width="120">
+      <el-table-column fixed="right" label="操作" width="120">
         <template #default>
-          <!-- <el-button type="primary" size="small" ref="buttonRef" v-hover-outside="onClickOutside">...</el-button> -->
           <el-popover
             placement="bottom-start"
-            :width="200"
+            :width="120"
             trigger="hover"
-            content="t"
           >
+            <div style="text-align: right; margin: 0; display: flex;flex-direction: column;" class="popover-list">
+              <el-button size="small" text @click="visible = false">编辑</el-button>
+              <el-button size="small" type="danger" @click="visible = false"
+                >删除</el-button
+              >
+            </div>
             <template #reference>
               <el-button class="m-2">...</el-button>
             </template>
@@ -35,19 +39,42 @@
         </template>
     </el-table-column>
     </el-table>
+    <div>
+      <!-- :disabled="disabled"
+      :background="background" -->
+      <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      :page-sizes="[10, 20, 30, 40]"
+      small="false"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+    </div>
   </div>
 </template>
 
 <script lang="ts" >
 import { defineComponent } from 'vue';
 import { Search, Plus, Delete } from "@element-plus/icons-vue"
-// import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import { ref, unref } from 'vue'
-const buttonRef = ref()
-const popoverRef = ref()
-const onClickOutside = () => {
-  unref(popoverRef).popperRef?.delayHide?.()
-}
+// const buttonRef = ref()
+// const popoverRef = ref()
+// const currentPage = ref(4)
+// const pageSize = ref(10)
+// const small = ref(false)
+// const background = ref(false)
+// const disabled = ref(false)
+
+// const handleSizeChange = (val: number) => {
+//   console.log(`${val} items per page`)
+// }
+// const handleCurrentChange = (val: number) => {
+//   console.log(`current page: ${val}`)
+// }
+
 
 const tableData = [
   {
@@ -65,10 +92,21 @@ export default defineComponent({
   components: {},
   data(){
     return {
-      tableData: tableData
+      tableData: tableData,
+      visible: false,
+      currentPage: 1,
+      pageSize: 10,
+      total: 99
     }
   },
-  methods: {}
+  methods: {
+    handleSizeChange(val: number) {
+      console.log(`${val} items per page`)
+    },
+    handleCurrentChange(val: number) {
+      console.log(`current page: ${val}`)
+    }
+  }
 });
 </script>
 
@@ -127,6 +165,7 @@ export default defineComponent({
   .el-tag--primary .el-tag--light {
     background: rgba(141, 145, 165, 1)!important;
   }
+
 
   .m-2 {
     border: none;
